@@ -42,23 +42,24 @@ class Graph {
 
   removeVertex(node) {
     if (this.vertices.has(node)) {
-      this.vertices.delete(node);
-      for (let v of this.vertices) {
-        if (v.adjacent.has(node)) {
-          v.adjacent.delete(node);
-        }
+      let adj = node.adjacent;
+      for (let a of adj) {
+        this.removeEdge(node, a);
       }
+
+      this.vertices.delete(node);
+    } else {
+      throw new Error("node not in graph");
     }
   }
 
   depthFirstSearch(node) {
     if (this.vertices.has(node)) {
-      let check = new Set();
+      let check = new Set([node.val]);
       let stack = [node];
       let final = [];
       while (stack.length) {
         let currentNode = stack.pop();
-        console.log(currentNode);
 
         for (let a of currentNode.adjacent) {
           if (!check.has(a.val)) {
@@ -68,7 +69,6 @@ class Graph {
         }
 
         final.push(currentNode.val);
-        check.add(currentNode.val);
       }
       return final;
     }
@@ -76,13 +76,11 @@ class Graph {
 
   breadthFirstSearch(node) {
     if (this.vertices.has(node)) {
-      let check = new Set([node]);
+      let check = new Set([node.val]);
       let queue = [node];
       let final = [];
       while (queue.length) {
         let currentNode = queue.shift();
-        console.log(currentNode);
-
         for (let a of currentNode.adjacent) {
           if (!check.has(a.val)) {
             queue.push(a);
@@ -102,7 +100,6 @@ class Graph {
       let seen = new Set(toVisitQueue);
       while (toVisitQueue.length) {
         let currentNode = toVisitQueue.shift();
-        console.log("visiting ", currentNode.val);
 
         if (currentNode === node2) return true;
 
@@ -115,7 +112,7 @@ class Graph {
       }
       return false;
     } else {
-      throw new Error("Both nodes should be on the tree.");
+      throw new Error("Both nodes should be on the graph");
     }
   }
 
@@ -125,7 +122,6 @@ class Graph {
       let seen = new Set(toVisitStack);
       while (toVisitStack.length) {
         let currentNode = toVisitStack.pop();
-        console.log("visiting ", currentNode.val);
 
         if (currentNode === node2) return true;
 
@@ -138,7 +134,7 @@ class Graph {
       }
       return false;
     } else {
-      throw new Error("Both nodes should be on the tree.");
+      throw new Error("Both nodes should be on the graph");
     }
   }
 
@@ -166,68 +162,9 @@ class Graph {
       }
       return false;
     } else {
-      throw new Error("Both nodes should be on the tree.");
+      throw new Error("Both nodes should be on the graph");
     }
   }
 }
 
-let ross = new Node("ross");
-let rachel = new Node("rachel");
-let monica = new Node("monica");
-let chandler = new Node("chandler");
-let joey = new Node("joey");
-let phoebe = new Node("phoebe");
-let janice = new Node("janice");
-let gunther = new Node("gunther");
-let g = new Graph();
-g.addVertex(ross);
-g.addVertex(rachel);
-g.addVertices([monica, chandler]);
-g.addVertices([joey, phoebe]);
-g.addEdge(ross, rachel);
-g.addEdge(ross, phoebe);
-g.addEdge(rachel, monica);
-g.addEdge(rachel, joey);
-g.addEdge(monica, phoebe);
-g.addEdge(monica, chandler);
-g.addEdge(phoebe, joey);
-g.addEdge(joey, chandler);
-g.addEdge(chandler, ross);
-
-let graph = new Graph();
-let S = new Node("S");
-let P = new Node("P");
-let U = new Node("U");
-let X = new Node("X");
-let Q = new Node("Q");
-let Y = new Node("Y");
-let V = new Node("V");
-let R = new Node("R");
-let W = new Node("W");
-let T = new Node("T");
-let Z = new Node("Z");
-let A = new Node("A");
-
-graph.addVertices([S, P, U, X, Q, Y, V, R, W, T, Z]);
-
-graph.addEdge(S, P);
-graph.addEdge(S, U);
-
-graph.addEdge(P, X);
-graph.addEdge(U, X);
-
-graph.addEdge(P, Q);
-graph.addEdge(U, V);
-
-graph.addEdge(X, Q);
-graph.addEdge(X, Y);
-graph.addEdge(X, V);
-
-graph.addEdge(Q, R);
-graph.addEdge(Y, R);
-
-graph.addEdge(Y, W);
-graph.addEdge(V, W);
-
-graph.addEdge(R, T);
-graph.addEdge(W, T);
+module.exports = { Node, Graph };
